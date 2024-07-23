@@ -1,0 +1,231 @@
+<app-loader *ngIf="submit"></app-loader>
+<div class="container-fluid">
+    <div class="row">  
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Students Table</h4>
+                    <div class="table-responsive">
+                      <table class="table align-middle dt-responsive nowrap w-100 table-check" id="job-list">
+                        <thead>
+                          <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Bith Date</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">Grade</th>
+                            <th scope="col">Parent's Name</th>
+                            <th scope="col">Roles</th>
+                            <th scope="col">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let data of studentsList">
+                            <th scope="row">{{data.id}}</th>
+                            <td>{{data.name}}</td>
+                            <td>{{data.last_name}}</td>
+                            <td>{{data.email}}</td>
+                            <td>{{data.birth_date}}</td>
+                            <td>{{data.age}}</td>
+                            <td>{{data.grade}}</td>
+                            <td>
+                              <span lass="badge badge-soft-{{data.type_color}}" >{{data.parent?.name}}- {{data.parent?.last_name}}</span>
+                            </td>
+
+                            <td><span *ngFor="let role  of data.roles; index as i" class="badge" [ngClass]="{ 'bg-success': role === 'student', 'bg-info': role === 'teacher', 'bg-danger': role === 'admin'}">{{role}}</span></td>
+                            <td>
+                              <ul class="list-unstyled hstack gap-1 mb-0">
+                                <li data-bs-toggle="tooltip" data-bs-placement="top" title="View">
+                                  <a routerLink="/jobs/details" class="btn btn-sm btn-soft-primary"><i class="mdi mdi-eye-outline"></i></a>
+                                </li>
+                                <li data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                  <a href="javascript:void(0);" class="btn btn-sm btn-soft-info" (click)="editDataGet(data.id,content)"><i class="mdi mdi-pencil-outline"></i></a>
+                                </li>
+                                <li data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                  <a href="javascript:void(0);" data-bs-toggle="modal" class="btn btn-sm btn-soft-danger" (click)="delete($event,data.id)"><i class="mdi mdi-delete-outline"></i></a>
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+    
+              <h4 class="card-title">Add Student</h4>
+              <p class="card-title-desc">Fill all information below</p>
+    
+              <form [formGroup]="formGroup" (ngSubmit)="validSubmit()">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="name">Name</label>
+                      <input id="name" name="productname" type="text" placeholder="Name" class="form-control" formControlName="name" [ngClass]="{'is-invalid': submit && form.name.errors}">
+                      <div *ngIf="submit && form.name.errors" class="invalid-feedback">
+                        <span *ngIf="form.name.errors.required">Name is required.</span>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="lastname">Last Name</label>
+                      <input id="lastname" name="lastname" placeholder="Last Name" type="text" class="form-control" formControlName="last_name" [ngClass]="{'is-invalid': submit && form.last_name.errors}">
+                      <div *ngIf="submit && form.last_name.errors" class="invalid-feedback">
+                        <span *ngIf="form.last_name.errors.required">Last name is required.</span>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="email">Email</label>
+                      <input id="email" name="Email" type="email" placeholder="exemple@gmail.con " class="form-control" formControlName="email" [ngClass]="{'is-invalid': submit &&
+                        form.email.errors}">
+                      <div *ngIf="submit && form.email.errors" class="invalid-feedback">
+                        <span *ngIf="form.email.errors.required">email is required.</span>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="price">Password</label>
+                      <input id="password" name="password" type="text" class="form-control" placeholder="********" formControlName="password"[ngClass]="{'is-invalid': submit &&
+                      form.password.errors}">
+                      <div *ngIf="submit && form.password.errors" class="invalid-feedback">
+                        <span *ngIf="form.password.required">Password is required.</span>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="price">Phone Number</label>
+                      <input id="phoneNumber" name="phoneNumber" type="number" class="form-control" placeholder="12 345 678" formControlName="phoneNumber"[ngClass]="{'is-invalid': submit &&
+                      form.phoneNumber.errors}">
+                      <div *ngIf="submit && form.phoneNumber.errors" class="invalid-feedback">
+                        <span *ngIf="form.phoneNumber.required">Phone Number is required.</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="col-sm-6">
+                      <label for="price">birth Date</label>
+                      <input id="birth_date" name="birth_date" type="text" class="form-control" placeholder="dd/mm/yyyy" formControlName="birth_date"[ngClass]="{'is-invalid': submit &&
+                      form.birth_date.errors}">
+                      <div *ngIf="submit && form.birth_date.errors" class="invalid-feedback">
+                        <span *ngIf="form.birth_date.required">birth date is required.</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <label for="price">Age</label>
+                      <input id="age" name="age" type="number" class="form-control" placeholder="23" formControlName="age"[ngClass]="{'is-invalid': submit &&
+                      form.age.errors}">
+                      <div *ngIf="submit && form.age.errors" class="invalid-feedback">
+                        <span *ngIf="form.age.required">Age is required.</span>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label class="control-label">grade</label>
+                      <ng-select formControlName="grade"[items]="['7eme','8eme','9eme']" placeholder="Select grade"></ng-select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="control-label">Parents</label>
+                      <ng-select formControlName="parent"[items]="parents_names" placeholder="Select Parent"></ng-select>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                  <button type="reset" class="btn btn-secondary">Cancel</button>
+                  <c-spinner *ngIf="submit"></c-spinner>
+                </div>
+              </form>
+              
+            </div>
+          </div>  
+        
+        </div>
+      </div>
+      <!-- end row -->
+    
+</div>
+<!-- Edit student Model -->
+<ng-template #content role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal" (click)="modalRef?.hide()"></button>
+  </div>
+  <form (ngSubmit)="saveEditStudent()" [formGroup]="formGroup">
+    <div class="modal-body">
+      <!-- <input type="hidden" name="id" value="" formControlName="name" /> -->
+      <div class="mb-3">
+        <label for="name-field" class="form-label">Name</label>
+        <input type="text" id="customername-field" class="form-control" placeholder="Enter Name" required formControlName="name" [ngClass]="{ 'is-invalid': submitted && form['name'].errors }" />
+        <div *ngIf="submitted && form['title'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['name'].errors['required']">Name is required</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="customername-field" class="form-label">Last Name</label>
+        <input type="text" id="customername-field" class="form-control" placeholder="Enter last name" required formControlName="last_name" [ngClass]="{ 'is-invalid': submitted && form['last_name'].errors }" />
+        <div *ngIf="submitted && form['last_name'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['last_name'].errors['required']">Company last_name is required</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email-field" class="form-label">Email</label>
+        <input type="text" id="email-field" disabled={{true}} class="form-control" placeholder="Enter Email" required formControlName="email" [ngClass]="{ 'is-invalid': submitted && form['email'].errors }" />
+        <div *ngIf="submitted && form['email'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['email'].errors['required']">email is required</div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="price">Phone Number</label>
+        <input id="phoneNumber" name="phoneNumber" disabled type="number" class="form-control" placeholder="12 345 678" formControlName="phoneNumber"[ngClass]="{'is-invalid': submit &&
+        form.phoneNumber.errors}">
+        <div *ngIf="submit && form.phoneNumber.errors" class="invalid-feedback">
+          <span *ngIf="form.phoneNumber.required">Phone Number is required.</span>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="email-field" class="form-label">Grade</label>
+        <ng-select formControlName="grade" [items]="['7eme','8eme','9eme']" placeholder="grade"></ng-select>
+        <div *ngIf="submitted && form['grade'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['grade'].errors['required']">grade is required</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="brth_date-field" class="form-label">birth Date</label>
+        <input type="text" id="brth_date-field" class="form-control" placeholder="Enter birth Date" required formControlName="birth_date" [ngClass]="{ 'is-invalid': submitted && form['birth_date'].errors }" />
+        <div *ngIf="submitted && form['birth_date'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['birth_date'].errors['required']">birth_date is required</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="age-field" class="form-label">Age</label>
+        <input type="text" id="age-field" class="form-control" placeholder="Enter Age" required formControlName="age" [ngClass]="{ 'is-invalid': submitted && form['age'].errors }" />
+        <div *ngIf="submitted && form['age'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['age'].errors['required']">Age is required</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="parent-field" class="form-label">Parent</label>
+        <ng-select formControlName="parent" [items]="parents_names" placeholder="parent"></ng-select>
+        <div *ngIf="submitted && form['parent'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['parent'].errors['required']">parent is required</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="hstack gap-2 justify-content-end">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="closeModal()">Close</button>
+        <button type="submit" class="btn btn-success" id="add-btn">Update</button>
+      </div>
+    </div>
+  </form>
+</ng-template>
+<!--End Modal -->

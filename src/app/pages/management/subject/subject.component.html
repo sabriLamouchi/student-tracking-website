@@ -1,0 +1,54 @@
+
+<div class="row">
+    <div class="table-responsive">
+        <table class="table mb-0">
+
+          <thead class="thead-dark">
+            <tr>
+              <th>#</th>
+              <th>Subject Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of subjectsList">
+              <th scope="row">{{data.id}}</th>
+              <td>{{data.name}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+</div>
+<div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+
+          <h4 class="card-title">Add subject</h4>
+          <p class="card-title-desc">Fill all information below</p>
+
+          <form [formGroup]="formGroup" (ngSubmit)="validSubmit()">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <label for="name">Subject Name</label>
+                  <input id="name" name="subjectname" type="text" placeholder="Science / physics /Math " class="form-control" formControlName="name" [ngClass]="{'is-invalid': submit && form.name.errors}">
+                  <div *ngIf="submit && form.name.errors" class="invalid-feedback">
+                    <span *ngIf="form.name.errors.required">Name is required.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+              </div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-2">
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+              <button type="reset" class="btn btn-secondary">Cancel</button>
+              <c-spinner *ngIf="submit"></c-spinner>
+            </div>
+          </form>
+          
+        </div>
+      </div>  
+    
+    </div>
+  </div>

@@ -1,0 +1,175 @@
+
+<div class="row">
+    <div class="table-responsive">
+        <table class="table mb-0">
+
+          <thead class="thead-dark">
+            <tr>
+              <th>#</th>
+              <th>Scolar Year</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of ScolarYearsList">
+              <th scope="row">{{data.id}}</th>
+              <td>{{data.year}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+</div>
+<div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+
+          <h4 class="card-title">Add Scolar's Year</h4>
+          <p class="card-title-desc">Fill all information below</p>
+
+          <form [formGroup]="YearForm" (ngSubmit)="saveYear()">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <label for="name">Year</label>
+                  <input id="name" name="scolaryear" type="text" placeholder="2023/2024" class="form-control" formControlName="year" [ngClass]="{'is-invalid': submit && form.year.errors}">
+                  <div *ngIf="submit && form.year.errors" class="invalid-feedback">
+                    <span *ngIf="form.year.errors.required">year is required.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+              </div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-2">
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+              <button type="reset" class="btn btn-secondary">Cancel</button>
+              <c-spinner *ngIf="submit"></c-spinner>
+            </div>
+          </form>
+          
+        </div>
+      </div>  
+    
+    </div>
+  </div>
+  <div class="card-body">
+    <h5 class="mb-0 card-title flex-grow-1">Classes Lists</h5>
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="col-xl-4 col-lg-6">
+          <label for="searchInput" class="form-label">Search</label>
+          <input type="search" class="form-control" id="searchInput" placeholder="Search for ..." [(ngModel)]="classListService.searchTerm">
+        </div>
+        <div class="flex-shrink-0 d-flex gap-1">
+          <a href="javascript:void(0);" class="btn btn-primary" (click)="openModal(content)">Add New</a>
+          <a href="javascript:void(0);" class="btn btn-light"><i class="mdi mdi-refresh"></i></a>
+          <div class="dropdown d-inline-block" dropdown>
+            <button type="menu" class="btn btn-success" id="*dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" dropdownToggle><i class="mdi mdi-dots-vertical"></i></button>
+            <ul class="dropdown-menu dropdown-menu dropdown-menu-end show" aria-labelledby="*dropdownMenuButton1" *dropdownMenu>
+              <li><a class="dropdown-item" href="javascript:void(0);">Action</a></li>
+              <li><a class="dropdown-item" href="javascript:void(0);">Another action</a></li>
+              <li><a class="dropdown-item" href="javascript:void(0);">Something else here</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    <div class="table-responsive">
+      <table class="table align-middle dt-responsive nowrap w-100 table-check" id="job-list">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">name</th>
+            <th scope="col">teacher </th>
+            <th scope="col">student </th>
+            <th scope="col">subject</th>
+            <th scope="col">scolar Year</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of classes">
+            <th scope="row">{{data.id}}</th>
+            <td>{{data.name}}</td>
+            <td>{{data.teacher.name}} - {{data.teacher.last_name}}</td>
+            <td>{{data.student.name}} - {{data.student.last_name}}</td>
+            <td>{{data.subject.name}}</td>
+            <td>{{data.scolar.year}}</td>
+            <td>
+              <ul class="list-unstyled hstack gap-1 mb-0">
+                <li data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                  <a href="javascript:void(0);" data-bs-toggle="modal" class="btn btn-sm btn-soft-danger" (click)="delete($event)"><i class="mdi mdi-delete-outline"></i></a>
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row justify-content-between align-items-center">
+      <div class="col-auto me-auto">
+        <p class="text-muted mb-0">Showing <b>{{classListService.startIndex}}</b> to <b>{{classListService.endIndex}}</b> of <b>{{classListService.totalRecords}}</b> entries</p>
+      </div>
+      <div class="col-auto">
+        <div class="text-md-right float-md-end pagination-rounded">
+          <ul class="pagination pagination-rounded justify-content-end mb-2">
+            <pagination [totalItems]="(total | async)!" [(ngModel)]="classListService.page" [itemsPerPage]="classListService.pageSize" previousText="&lsaquo;" nextText="&rsaquo;"></pagination>
+          </ul>
+        </div>
+      </div>
+      <!--end col-->
+    </div>
+    <!--end row-->
+  </div>
+  <!-- Order Create Model -->
+<ng-template #content role="document" let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Add New</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal" (click)="modalRef?.hide()"></button>
+    </div>
+    <form (ngSubmit)="validSubmit()" [formGroup]="classForm">
+      <div class="modal-body">
+        <!-- <input type="hidden" name="id" value="" formControlName="ids" /> -->
+        <div class="mb-3">
+          <label class="control-label">teacher</label>
+          <ng-select formControlName="teacher" [items]="teachers_names" placeholder="Select teacher"
+          [ngClass]="{'is-invalid': submit && form.teacher.errors}"></ng-select>
+          <div *ngIf="submit && form.teacher.errors" class="invalid-feedback">
+            <span *ngIf="form.teacher.errors.required">teacher is required.</span>
+          </div>
+        </div>
+  
+        <div class="mb-3">
+          <label class="control-label">Student</label>
+          <ng-select formControlName="student"[items]="students_names" placeholder="Select Student"
+          [ngClass]="{'is-invalid': submit && form.student.errors}"></ng-select>
+          <div *ngIf="submit && form.student.errors" class="invalid-feedback">
+            <span *ngIf="form.student.errors.required">student is required.</span>
+          </div>
+        </div>
+  
+        <div class="mb-3">
+          <label class="control-label">subject</label>
+          <ng-select formControlName="subject"[items]="subjects_names" placeholder="Select subject"
+          [ngClass]="{'is-invalid': submit && form.subject.errors}"></ng-select>
+          <div *ngIf="submit && form.subject.errors" class="invalid-feedback">
+            <span *ngIf="form.subject.errors.required">subject is required.</span>
+          </div>
+        </div>
+  
+        <div class="mb-3">
+          <label class="control-label">Scolar Year</label>
+          <ng-select formControlName="scolar"[items]="years" placeholder="Select Scolar Year"
+          [ngClass]="{'is-invalid': submit && form.scolar.errors}"></ng-select>
+          <div *ngIf="submit && form.scolar.errors" class="invalid-feedback">
+            <span *ngIf="form.scolar.errors.required">scolar is required.</span>
+          </div>
+        </div> 
+
+      </div>
+      <div class="modal-footer">
+        <div class="hstack gap-2 justify-content-end">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="closeModal()">Close</button>
+          <button type="submit" class="btn btn-success" id="add-btn">Add</button>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <!--End Modal -->

@@ -1,0 +1,219 @@
+<app-loader *ngIf="submit"></app-loader>
+<div class="container-fluid">
+    <div class="row">  
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Parents Table</h4>
+                    <div class="table-responsive">
+                      <table class="table align-middle dt-responsive nowrap w-100 table-check" id="job-list">
+                        <thead>
+                          <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Phone Number</th>
+                            <th scope="col">Bith Date</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">Students Names</th>
+                            <th scope="col">Roles</th>
+                            <th scope="col">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let data of parentList">
+                            <th scope="row">{{data.id}}</th>
+                            <td>{{data.name}}</td>
+                            <td>{{data.last_name}}</td>
+                            <td>{{data.email}}</td>
+                            <td>{{data.phone_number}}</td>
+                            <td>{{data.birth_date}}</td>
+                            <td>{{data.age}}</td>
+                            <td><span *ngFor="let student of data.students;index as i" lass="badge badge-soft-{{data.type_color}}" [ngClass]="{'badge-soft-success': data.type === 'Full Time','badge-soft-danger': data.type === 'Part Time','badge-soft-info': data.type === 'Freelance','badge-soft-warning': data.type === 'Internship'}">{{student.name}}- {{student.last_name}}<br></span></td>
+                            <td><span *ngFor="let role  of data.roles; index as i" class="badge" [ngClass]="{ 'bg-success': role === 'parent', 'bg-info': role === 'teacher', 'bg-danger': role === 'admin'}">{{role}}</span></td>
+                            <td>
+                              <ul class="list-unstyled hstack gap-1 mb-0">
+                                <li data-bs-toggle="tooltip" data-bs-placement="top" title="View">
+                                  <a routerLink="/jobs/details" class="btn btn-sm btn-soft-primary"><i class="mdi mdi-eye-outline"></i></a>
+                                </li>
+                                <li data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                  <a href="javascript:void(0);" class="btn btn-sm btn-soft-info" (click)="editDataGet(data.id,content)"><i class="mdi mdi-pencil-outline"></i></a>
+                                </li>
+                                <li data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                  <a href="javascript:void(0);" data-bs-toggle="modal" class="btn btn-sm btn-soft-danger" (click)="delete($event,data.id)"><i class="mdi mdi-delete-outline"></i></a>
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+    
+              <h4 class="card-title">Add Parent</h4>
+              <p class="card-title-desc">Fill all information below</p>
+    
+              <form [formGroup]="parentForm" (ngSubmit)="validSubmit()">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="name">Name</label>
+                      <input id="name" name="productname" type="text" placeholder="Name" class="form-control" formControlName="name" [ngClass]="{'is-invalid': submit && form.name.errors}">
+                      <div *ngIf="submit && form.name.errors" class="invalid-feedback">
+                        <span *ngIf="form.name.errors.required">Name is required.</span>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="lastname">Last Name</label>
+                      <input id="lastname" name="lastname" placeholder="Last Name" type="text" class="form-control" formControlName="last_name" [ngClass]="{'is-invalid': submit && form.last_name.errors}">
+                      <div *ngIf="submit && form.last_name.errors" class="invalid-feedback">
+                        <span *ngIf="form.last_name.errors.required">Last name is required.</span>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="email">Email</label>
+                      <input id="email" name="Email" type="email" placeholder="exemple@gmail.con " class="form-control" formControlName="email" [ngClass]="{'is-invalid': submit &&
+                        form.email.errors}">
+                      <div *ngIf="submit && form.email.errors" class="invalid-feedback">
+                        <span *ngIf="form.email.errors.required">email is required.</span>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="price">Password</label>
+                      <input id="password" name="password" type="text" class="form-control" placeholder="********" formControlName="password"[ngClass]="{'is-invalid': submit &&
+                      form.password.errors}">
+                      <div *ngIf="submit && form.password.errors" class="invalid-feedback">
+                        <span *ngIf="form.password.required">Password is required.</span>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="price">Phone Number</label>
+                      <input id="phoneNumber" name="phoneNumber" type="number" class="form-control" placeholder="12 345 678" formControlName="phoneNumber"[ngClass]="{'is-invalid': submit &&
+                      form.phoneNumber.errors}">
+                      <div *ngIf="submit && form.phoneNumber.errors" class="invalid-feedback">
+                        <span *ngIf="form.phoneNumber.required">Phone Number is required.</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="col-sm-6">
+                      <label for="price">birth Date</label>
+                      <input id="birth_date" name="birth_date" type="text" class="form-control" placeholder="dd/mm/yyyy" formControlName="birth_date"[ngClass]="{'is-invalid': submit &&
+                      form.birth_date.errors}">
+                      <div *ngIf="submit && form.birth_date.errors" class="invalid-feedback">
+                        <span *ngIf="form.birth_date.required">birth date is required.</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <label for="price">Age</label>
+                      <input id="age" name="age" type="number" class="form-control" placeholder="23" formControlName="age"[ngClass]="{'is-invalid': submit &&
+                      form.age.errors}">
+                      <div *ngIf="submit && form.age.errors" class="invalid-feedback">
+                        <span *ngIf="form.age.required">Age is required.</span>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label class="control-label">Students</label>
+                      <ng-select formControlName="students" [items]="students_names" placeholder="Select Students" [multiple]="true"></ng-select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="control-label">Add Role</label>
+                      <ng-select formControlName="roles" [items]="roles" [multiple]="true" placeholder="Select Roles"></ng-select>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                  <button type="reset" class="btn btn-secondary">Cancel</button>
+                  <c-spinner *ngIf="submit"></c-spinner>
+                </div>
+              </form>
+              
+            </div>
+          </div>  
+        
+        </div>
+      </div>
+      <!-- end row -->
+</div>
+<!-- Edit Parent Model -->
+<ng-template #content role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal" (click)="modalRef?.hide()"></button>
+  </div>
+  <form (ngSubmit)="saveEditParent()" [formGroup]="parentForm">
+    <div class="modal-body">
+      <!-- <input type="hidden" name="id" value="" formControlName="name" /> -->
+      <div class="mb-3">
+        <label for="customername-field" class="form-label">Name</label>
+        <input type="text" id="customername-field" class="form-control" placeholder="Enter Name" required formControlName="name" [ngClass]="{ 'is-invalid': submitted && form['name'].errors }" />
+        <div *ngIf="submitted && form['title'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['name'].errors['required']">Name is required</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="customername-field" class="form-label">Last Name</label>
+        <input type="text" id="customername-field" class="form-control" placeholder="Enter last name" required formControlName="last_name" [ngClass]="{ 'is-invalid': submitted && form['last_name'].errors }" />
+        <div *ngIf="submitted && form['last_name'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['last_name'].errors['required']">Company last_name is required</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email-field" class="form-label">Email</label>
+        <input type="text" id="email-field" disabled class="form-control" placeholder="Enter Email" required formControlName="email" [ngClass]="{ 'is-invalid': submitted && form['email'].errors }" />
+        <div *ngIf="submitted && form['email'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['email'].errors['required']">email is required</div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="email-field" class="form-label">Phone Number</label>
+        <input type="text" id="phone-field" disabled class="form-control" placeholder="Enter Phone number" required formControlName="phone_number" [ngClass]="{ 'is-invalid': submitted && form['phone_number'].errors }" />
+        <div *ngIf="submitted && form['phone_number'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['phone_number'].errors['required']">phone Number required</div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="brth_date-field" class="form-label">birth Date</label>
+        <input type="text" id="brth_date-field" class="form-control" placeholder="Enter birth Date" required formControlName="birth_date" [ngClass]="{ 'is-invalid': submitted && form['birth_date'].errors }" />
+        <div *ngIf="submitted && form['birth_date'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['birth_date'].errors['required']">birth_date is required</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="age-field" class="form-label">Age</label>
+        <input type="text" id="age-field" class="form-control" placeholder="Enter Age" required formControlName="age" [ngClass]="{ 'is-invalid': submitted && form['age'].errors }" />
+        <div *ngIf="submitted && form['age'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['age'].errors['required']">Age is required</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="students-field" class="form-label">students</label>
+        <ng-select formControlName="students" [items]="students_names" placeholder="Students" [multiple]="true"></ng-select>
+        <div *ngIf="submitted && form['students'].errors" class="invalid-feedback" align="left">
+          <div *ngIf="form['students'].errors['required']">students is required</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="hstack gap-2 justify-content-end">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="closeModal()">Close</button>
+        <button type="submit" class="btn btn-success" id="add-btn">Update</button>
+      </div>
+    </div>
+  </form>
+</ng-template>
+<!--End Modal -->
