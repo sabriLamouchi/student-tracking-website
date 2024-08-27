@@ -14,7 +14,7 @@ const routes: Routes = [
   },
   { path: 'dashboard', component: DefaultComponent },
   { path: 'calendar', component: CalendarComponent },
-  { path: 'chat', component: ChatComponent },
+  { path: 'chat', loadChildren: () => import('./chat/chat.module').then(m => m.ChatModule)},
   { path: 'filemanager', component: FilemanagerComponent },
   { path: 'dashboards', loadChildren: () => import('./dashboards/dashboards.module').then(m => m.DashboardsModule) },
   { path: 'ecommerce', loadChildren: () => import('./ecommerce/ecommerce.module').then(m => m.EcommerceModule) },

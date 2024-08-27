@@ -5,6 +5,7 @@ import { ChatUser, ChatMessage } from './chat.model';
 
 import { chatData, chatMessagesData } from './data';
 import { AuthService } from 'src/app/authentication/auth.service';
+import { ChatService } from './chat.service';
 
 @Component({
   selector: 'app-chat',
@@ -21,7 +22,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
   // bread crumb items
   breadCrumbItems: Array<{}>;
   chatData: ChatUser[];
+  RecentChatData: any[];
   chatMessagesData: ChatMessage[];
+  contacts: any[];
   formData: UntypedFormGroup;
   // Form submit
   chatSubmit: boolean;
@@ -29,7 +32,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
   userProfile:any;
   emoji:any = '';
 
-  constructor(public formBuilder: UntypedFormBuilder,private authService: AuthService) {
+  
+  constructor(public formBuilder: UntypedFormBuilder,private authService: AuthService,private chatService: ChatService) {
   }
 
   ngOnInit() {
@@ -39,10 +43,12 @@ export class ChatComponent implements OnInit, AfterViewInit {
       message: ['', [Validators.required]],
     });
 
+    
     this.onListScroll();
-
     this._fetchData();
     this._fetchUserProfile();
+    this._fetchRecentMessage();
+    this._fetchContacts();
   }
 
   ngAfterViewInit() {
@@ -64,6 +70,18 @@ export class ChatComponent implements OnInit, AfterViewInit {
   private _fetchUserProfile() {
     this.authService.getProfile().subscribe(data => {
       this.userProfile = data;
+    });
+  }
+  private _fetchRecentMessage(){
+    this.chatService.getRecentMessage().subscribe(data => {
+      console.log("Recent Message",data);
+      this.RecentChatData = data;
+    });
+  }
+  private _fetchContacts(){
+    this.chatService.getContacts().subscribe(data => {
+      this.contacts = data.filter((user)=>user.name!=this.userProfile.name && user.last_name!=this.userProfile.last_name);
+      console.log("Contacts",this.contacts);
     });
   }
 

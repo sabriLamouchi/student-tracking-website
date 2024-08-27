@@ -39,14 +39,15 @@ import { ChartModule } from './chart/chart.module';
 import { CalendarComponent } from './calendar/calendar.component';
 import { MapsModule } from './maps/maps.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ChatComponent } from './chat/chat.component';
+
 
 import { FilemanagerComponent } from './filemanager/filemanager.component';
 import { ManagementModule } from './management/management.module';
 import { LoginModule } from './login/login.module';
+import { ChatModule } from './chat/chat.module';
 
 @NgModule({
-  declarations: [CalendarComponent, ChatComponent, FilemanagerComponent],
+  declarations: [CalendarComponent, FilemanagerComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -82,6 +83,7 @@ import { LoginModule } from './login/login.module';
     LightboxModule,
     PickerModule,
     ManagementModule,
+    ChatModule,
   ],
 })
 export class PagesModule { }
