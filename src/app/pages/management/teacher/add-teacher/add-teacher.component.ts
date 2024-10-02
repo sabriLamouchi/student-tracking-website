@@ -39,7 +39,7 @@ export class AddTeacherComponent implements OnInit {
       name: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9]+')]],
       last_name: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9]+')]],
       email:['', [Validators.required, Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')]],
-      phoneNumber: ['', [Validators.required, Validators.pattern('^\\d{8}$')]],
+      phone_number: ['', [Validators.required, Validators.pattern('^\\d{8}$')]],
       password: ['', [Validators.required]],
       birth_date: ['', [Validators.required,Validators.pattern('^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19|20)\\d\\d$')]],
       age: ['', [Validators.required]],
@@ -115,11 +115,11 @@ export class AddTeacherComponent implements OnInit {
   validSubmit() {
     this.submit = true;
     if(this.formGroup.valid){
-      console.log("row ",{...this.formGroup.getRawValue(),subjects:this.getSubjectsIdsByName(this.formGroup.get('subjects').value as string[])});
+      console.log("row ",{...this.formGroup.getRawValue(),subjects:this.getSubjectsIdsByName(this.formGroup.get('subjects').value as string[]),roles:[...this.formGroup.get('roles').value,"teacher"]});
       this.teacherService.addTeacher(
         {
           ...this.formGroup.getRawValue(),
-          phone_number:this.formGroup.get('phoneNumber').value as number,
+          phone_number:this.formGroup.get('phone_number').value as number,
           birth_date:this.formGroup.get('birth_date').value as string,
           subjects:this.getSubjectsIdsByName(this.formGroup.get('subjects').value as string[]),
           roles:this.formGroup.get('roles').value ? [...this.formGroup.get('roles').value,"teacher"] : ["teacher"],
@@ -200,7 +200,7 @@ export class AddTeacherComponent implements OnInit {
       this.formGroup.controls['name'].setValue(listData[0].name);
       this.formGroup.controls['last_name'].setValue(listData[0].last_name);
       this.formGroup.controls['email'].setValue(listData[0].email);
-      this.formGroup.controls['phoneNumber'].setValue(listData[0].phone_number);
+      this.formGroup.controls['phone_number'].setValue(listData[0].phone_number);
       this.formGroup.controls['birth_date'].setValue(listData[0].birth_date);
       this.formGroup.controls['age'].setValue(listData[0].age);
       this.formGroup.controls['subjects'].setValue(listData[0].subjects.map((subject:any)=>subject.name));
@@ -217,7 +217,7 @@ export class AddTeacherComponent implements OnInit {
         {name:this.formGroup.get('name')?.value,
           last_name:this.formGroup.get('last_name')?.value,
           email:this.formGroup.get('email')?.value,
-          phone_number:this.formGroup.get('phoneNumber')?.value as number,
+          phone_number:this.formGroup.get('phone_number')?.value as number,
           birth_date:this.formGroup.get('birth_date')?.value,
           age:this.formGroup.get('age')?.value,
           subjects:this.getSubjectsIdsByName(this.formGroup.get('subjects').value as string[]),

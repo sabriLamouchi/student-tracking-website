@@ -31,7 +31,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   usermessage: string;
   userProfile:any;
   emoji:any = '';
-
+  recieverId:number;
   
   constructor(public formBuilder: UntypedFormBuilder,private authService: AuthService,private chatService: ChatService) {
   }
@@ -70,6 +70,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   private _fetchUserProfile() {
     this.authService.getProfile().subscribe(data => {
       this.userProfile = data;
+      console.log("User Profile",this.userProfile);
     });
   }
   private _fetchRecentMessage(){
@@ -94,17 +95,22 @@ export class ChatComponent implements OnInit, AfterViewInit {
     }
   }
 
-  chatUsername(name) {
+  chatUsername(reciverId:number,name:string) {
     this.username = name;
-    this.usermessage = 'Hello';
     this.chatMessagesData = [];
-    const currentDate = new Date();
-
-    this.chatMessagesData.push({
-      name: this.username,
-      message: this.usermessage,
-      time: currentDate.getHours() + ':' + currentDate.getMinutes()
-    });
+    this.recieverId = reciverId;
+    // const currentDate = new Date();  
+    this.chatService.getAllMessagesforSenderAndReciever(reciverId).subscribe(data=>{
+      console.log("Message data:",data);
+      data.map((message)=>{
+        this.chatMessagesData.push({
+          name: message.sender.id==this.userProfile.userId ? "You" : message.receiver.name,
+          align:message.sender.id==this.userProfile.userId ? 'right' : 'left',
+          message: message.message,
+          time: message.time
+        });
+      })
+    })
 
   }
 
@@ -116,12 +122,19 @@ export class ChatComponent implements OnInit, AfterViewInit {
     const currentDate = new Date();
     if (this.formData.valid && message) {
       // Message Push in Chat
-      this.chatMessagesData.push({
-        align: 'right',
-        name: 'Henry Wells',
-        message,
-        time: currentDate.getHours() + ':' + currentDate.getMinutes()
-      });
+      this.chatService.sendMessage(
+        { message,
+          receiverId:this.recieverId,
+          time:currentDate.getHours() + ':' + currentDate.getMinutes()}
+      ).subscribe(data=>{
+        console.log("Message Sent",data);
+        this.chatMessagesData.push({
+          align: 'right',
+          name: "you",
+          message,
+          time: currentDate.getHours() + ':' + currentDate.getMinutes() 
+        });
+      })
       this.onListScroll();
 
       // Set Form Data Reset

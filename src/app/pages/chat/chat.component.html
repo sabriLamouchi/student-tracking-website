@@ -46,7 +46,7 @@
                 <ngx-simplebar style="position: relative; height: 410px;" #scrollEle>
                   <ul class="list-unstyled chat-list">
                     <li class="" *ngFor="let data of RecentChatData" [ngClass]="{'active': data.receiver.name == username}" >
-                      <a href="javascript: void(0);" (click)="chatUsername(data.receiver.name)">
+                      <a href="javascript: void(0);" (click)="chatUsername(data.receiver.id,data.receiver.name)">
                         <div class="d-flex">
                           <div class="flex-shrink-0 align-self-center me-3">
                             <i class="mdi mdi-circle text-{{data.color}} font-size-10"></i>
@@ -168,12 +168,12 @@
                 <div class="mt-4">
                   <ul class="list-unstyled chat-list">
                     <li *ngFor="let data of contacts" class="d-flex">
-                      <div class="avatar-xs align-self-center me-3" *ngIf="!data.image">
+                      <div class="avatar-xs align-self-center me-3 cursor-pointer" *ngIf="!data.image" >
                         <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                           {{data.name.charAt(0)}}
                         </span>
                       </div>
-                      <a href="javascript: void(0);">
+                      <a href="javascript: void(0);" class="cursor-pointer" (click)="chatUsername(data.id,data.name)">
                         <h5 class="font-size-14 mb-0"> {{data.name}} {{data.last_name}}</h5>
                       </a>
                     </li>

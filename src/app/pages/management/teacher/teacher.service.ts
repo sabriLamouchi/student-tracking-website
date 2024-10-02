@@ -13,23 +13,35 @@ export class TeacherService {
   constructor(private http: HttpClient) { }
 
   async getAllTeachers(): Promise<any[]> {
-    const response = await fetch(this.apiUrl2,{
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('JWT_Token')}`
+    try {
+      const response = await fetch(this.apiUrl2,{
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('JWT_Token')}`
+          
+        }
         
+      });
+      if (response.ok) {
+        return await response.json();
+      }else{
+        throw new Error('Network response was not ok');
       }
-      
-    });
-    if (response.ok) {
-      return await response.json();
-    }else{
-      throw new Error('Network response was not ok');
     }
+    catch(e){
+      return e;
+    }
+
   }
-  addTeacher(student:teacherModel | any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, student);
+  addTeacher(teacher:teacherModel | any): Observable<any> {
+    try {
+      var res=this.http.post<any>(this.apiUrl, teacher);
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+    return res;
   }
   
   removeTeacher(id:number):Observable<any>{

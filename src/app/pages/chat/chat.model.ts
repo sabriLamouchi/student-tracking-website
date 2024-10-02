@@ -12,3 +12,9 @@ export interface ChatMessage {
     message: string;
     time: string;
 }
+
+export interface sendMesageDTO{
+    message: string;
+    receiverId: number;
+    time:string;
+}
