@@ -10,9 +10,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { RouterModule } from '@angular/router';
 import { ChatRoutingModule } from './chat-routing.module';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { socketIoConfigFactory } from './socket-config.factory';
 
 
 
+// const config: SocketIoConfig = { 
+//   url: 'http://localhost:3000/chat',
+//   options: {
+//     auth: {
+//       token: `Bearer ${localStorage.getItem('JWT_Token')}`,
+//     },
+//     transports: ['websocket']
+//   } };
 @NgModule({
   declarations: [ChatComponent],
   imports: [
@@ -25,7 +35,9 @@ import { ChatRoutingModule } from './chat-routing.module';
     TabsModule,
     ReactiveFormsModule,
     ChatRoutingModule,
+    SocketIoModule.forRoot(socketIoConfigFactory())
 ],
-  providers: [ChatService],
+  providers: [ChatService,
+  ],
 })
 export class ChatModule { }

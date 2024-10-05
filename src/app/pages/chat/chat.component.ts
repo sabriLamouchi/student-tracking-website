@@ -43,7 +43,11 @@ export class ChatComponent implements OnInit, AfterViewInit {
       message: ['', [Validators.required]],
     });
 
-    
+    this.chatService.getNewMesage().subscribe((message:any )=>{
+      console.log("New Message",message);
+      this.onListScroll();
+      // return message;
+    })
     this.onListScroll();
     this._fetchData();
     this._fetchUserProfile();
@@ -104,14 +108,13 @@ export class ChatComponent implements OnInit, AfterViewInit {
       console.log("Message data:",data);
       data.map((message)=>{
         this.chatMessagesData.push({
-          name: message.sender.id==this.userProfile.userId ? "You" : message.receiver.name,
+          name: message.sender.id == this.userProfile.userId ? "you" : message.sender.name,
           align:message.sender.id==this.userProfile.userId ? 'right' : 'left',
           message: message.message,
           time: message.time
         });
       })
     })
-
   }
 
   /**
@@ -122,19 +125,24 @@ export class ChatComponent implements OnInit, AfterViewInit {
     const currentDate = new Date();
     if (this.formData.valid && message) {
       // Message Push in Chat
-      this.chatService.sendMessage(
+      this.chatService.sendSocketMessage(
         { message,
-          receiverId:this.recieverId,
-          time:currentDate.getHours() + ':' + currentDate.getMinutes()}
-      ).subscribe(data=>{
-        console.log("Message Sent",data);
-        this.chatMessagesData.push({
-          align: 'right',
-          name: "you",
-          message,
-          time: currentDate.getHours() + ':' + currentDate.getMinutes() 
-        });
-      })
+        receiverId:this.recieverId,
+        time:currentDate.getHours() + ':' + currentDate.getMinutes()});
+
+      // this.chatService.sendMessage(
+      //   { message,
+      //     receiverId:this.recieverId,
+      //     time:currentDate.getHours() + ':' + currentDate.getMinutes()}
+      // ).subscribe(data=>{
+      //   console.log("Message Sent",data);
+      //   this.chatMessagesData.push({
+      //     align: 'right',
+      //     name: "you",
+      //     message,
+      //     time: currentDate.getHours() + ':' + currentDate.getMinutes() 
+      //   });
+      // })
       this.onListScroll();
 
       // Set Form Data Reset
