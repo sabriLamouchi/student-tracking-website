@@ -16,7 +16,9 @@ export class ChatService {
     getAllMessagesforSenderAndReciever(receiverId: number) {
         return this.http.get<any[]>(`http://localhost:3000/chat/chats/${receiverId}`);
     }
-
+    async getSenderName(id:number){
+        return await this.http.get<any>(`http://localhost:3000/users/getUser/${id}`);
+    }
     //send message
     sendMessage(message: sendMesageDTO) {
         return this.http.post<any>(`http://localhost:3000/chat/send`, message);

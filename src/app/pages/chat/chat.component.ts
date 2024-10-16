@@ -6,6 +6,7 @@ import { ChatUser, ChatMessage } from './chat.model';
 import { chatData, chatMessagesData } from './data';
 import { AuthService } from 'src/app/authentication/auth.service';
 import { ChatService } from './chat.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-chat',
@@ -33,7 +34,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   emoji:any = '';
   recieverId:number;
   
-  constructor(public formBuilder: UntypedFormBuilder,private authService: AuthService,private chatService: ChatService) {
+  constructor(public formBuilder: UntypedFormBuilder,private authService: AuthService,private chatService: ChatService,private toastr:ToastrService) {
   }
 
   ngOnInit() {
@@ -43,12 +44,24 @@ export class ChatComponent implements OnInit, AfterViewInit {
       message: ['', [Validators.required]],
     });
 
-    this.chatService.getNewMesage().subscribe((message:any )=>{
+    this.chatService.getNewMesage().subscribe(async(message:any )=>{
       console.log("New Message",message);
+      await this._fetchsenderName(message.senderId).then(data=>{
+        data.subscribe((data:any)=>{
+          console.log("data",data);
+          this.toastr.info('you have message from '+data.name+data.last_name+'\n Message: '+message.message,'Bootstrap')
+          this.chatMessagesData.push({
+            name: message.senderId == this.userProfile.userId ? "you" : data.name,
+            align:message.senderId==this.userProfile.userId ? 'right' : 'left',
+            message: message.message,
+            time: message.time
+          });
+        })
+        this.scrollRef.SimpleBar.getScrollElement().scrollTop =
+        this.scrollRef.SimpleBar.getScrollElement().scrollHeight + 30000;
+      });
       this.onListScroll();
-      // return message;
     })
-    this.onListScroll();
     this._fetchData();
     this._fetchUserProfile();
     this._fetchRecentMessage();
@@ -57,7 +70,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.scrollEle.SimpleBar.getScrollElement().scrollTop = 100;
-    this.scrollRef.SimpleBar.getScrollElement().scrollTop = 200;
+    this.scrollRef.SimpleBar.getScrollElement().scrollTop = 3000;
   }
 
   /**
@@ -66,10 +79,21 @@ export class ChatComponent implements OnInit, AfterViewInit {
   get form() {
     return this.formData.controls;
   }
-
+  private async _fetchsenderName(id:number):Promise<any>{
+    return await this.chatService.getSenderName(id);
+  }
   private _fetchData() {
     this.chatData = chatData;
     this.chatMessagesData = chatMessagesData;
+  }
+  private _isAsender(chatmessages:any[],senderName:string):boolean{
+    const res:boolean=false
+    chatmessages.forEach((message)=>{
+      if(message.align!='right'&& message.name==senderName ){
+        return true
+      }
+    })
+    return res
   }
   private _fetchUserProfile() {
     this.authService.getProfile().subscribe(data => {
@@ -94,7 +118,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     if (this.scrollRef !== undefined) {
       setTimeout(() => {
         this.scrollRef.SimpleBar.getScrollElement().scrollTop =
-          this.scrollRef.SimpleBar.getScrollElement().scrollHeight + 1500;
+          this.scrollRef.SimpleBar.getScrollElement().scrollHeight + 30000;
       }, 500);
     }
   }
