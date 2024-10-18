@@ -19,6 +19,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   @ViewChild('scrollRef') scrollRef;
 
   username = 'Steven Franklin';
+  status="horline";
 
   // bread crumb items
   breadCrumbItems: Array<{}>;
@@ -130,6 +131,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     // const currentDate = new Date();  
     this.chatService.getAllMessagesforSenderAndReciever(reciverId).subscribe(data=>{
       console.log("Message data:",data);
+      this.status=data[0].receiver.status;
       data.map((message)=>{
         this.chatMessagesData.push({
           name: message.sender.id == this.userProfile.userId ? "you" : message.sender.name,
@@ -150,23 +152,26 @@ export class ChatComponent implements OnInit, AfterViewInit {
     if (this.formData.valid && message) {
       // Message Push in Chat
       this.chatService.sendSocketMessage(
-        { message,
+        { 
+        message,
         receiverId:this.recieverId,
-        time:currentDate.getHours() + ':' + currentDate.getMinutes()});
+        time:currentDate.getHours() + ':' + currentDate.getMinutes()
+        }
+    );
 
-      // this.chatService.sendMessage(
-      //   { message,
-      //     receiverId:this.recieverId,
-      //     time:currentDate.getHours() + ':' + currentDate.getMinutes()}
-      // ).subscribe(data=>{
-      //   console.log("Message Sent",data);
-      //   this.chatMessagesData.push({
-      //     align: 'right',
-      //     name: "you",
-      //     message,
-      //     time: currentDate.getHours() + ':' + currentDate.getMinutes() 
-      //   });
-      // })
+      this.chatService.sendMessage(
+        { message,
+          receiverId:this.recieverId,
+          time:currentDate.getHours() + ':' + currentDate.getMinutes()}
+      ).subscribe(data=>{
+        console.log("Message Sent",data);
+        this.chatMessagesData.push({
+          align: 'right',
+          name: "you",
+          message,
+          time: currentDate.getHours() + ':' + currentDate.getMinutes() 
+        });
+      })
       this.onListScroll();
 
       // Set Form Data Reset

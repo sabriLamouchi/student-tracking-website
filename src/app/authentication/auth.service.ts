@@ -41,6 +41,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('JWT_Token');
     this.isLoggedIn = false;
+    window.location.reload()
   }
 
   isAuthenticated(): boolean {
