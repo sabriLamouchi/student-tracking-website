@@ -24,6 +24,7 @@ import { BlogComponent } from './blog/blog.component';
 import { JobsComponent } from './jobs/jobs.component';
 import { ManagementModule } from '../management/management.module';
 import { AuthenticationModule } from 'src/app/authentication/authentication.module';
+import { defaultService } from './default/default.service';
 
 @NgModule({
   declarations: [DefaultComponent, SaasComponent, CryptoComponent, BlogComponent, JobsComponent],
@@ -45,6 +46,6 @@ import { AuthenticationModule } from 'src/app/authentication/authentication.modu
     ManagementModule,
     AuthenticationModule,
   ],
-  providers: [BsDropdownConfig],
+  providers: [BsDropdownConfig,defaultService],
 })
 export class DashboardsModule { }

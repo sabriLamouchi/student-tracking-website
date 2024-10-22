@@ -9,6 +9,9 @@ import { ParentService } from '../../management/parent/parent.service';
 import { StudentService } from '../../management/student/student.service';
 import { TeacherService } from '../../management/teacher/teacher.service';
 import { AuthService } from 'src/app/authentication/auth.service';
+import { defaultService } from './default.service';
+import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 interface stateData{
   icon:string;
   title:string;
@@ -31,12 +34,20 @@ export class DefaultComponent implements OnInit {
     backdrop: true,
     ignoreBackdropClick: true
   };
-
+  admins:any=[];
+  submitted: boolean = false;
   isActive: string;
 
   @ViewChild('content') content;
   @ViewChild('center', { static: false }) center?: ModalDirective;
-  constructor(private modalService: BsModalService, private configService: ConfigService, private eventService: EventService,private parentService:ParentService,private studentsService:StudentService,private teacherService:TeacherService,private authService:AuthService) {
+  formGroup: UntypedFormGroup;
+  constructor(private modalService: BsModalService, private configService: ConfigService, private eventService: EventService,private parentService:ParentService,private studentsService:StudentService,private teacherService:TeacherService,private authService:AuthService,private defaultService:defaultService,
+    public formBuilder: FormBuilder,private toastr:ToastrService,
+  ) {
+  }
+
+  get form() {
+    return this.formGroup.controls;
   }
 
   ngOnInit() {
@@ -44,6 +55,17 @@ export class DefaultComponent implements OnInit {
     /**
      * horizontal-vertical layput set
      */
+    
+    this.formGroup = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9]+')]],
+      last_name: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9]+')]],
+      email:['', [Validators.required, Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')]],
+      phone_number: ['', [Validators.required, Validators.pattern('^\\d{8}$')]],
+      password: ['', [Validators.required]],
+      birth_date: ['', [Validators.required,Validators.pattern('^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19|20)\\d\\d$')]],
+      age: ['', [Validators.required]],
+      roles: ['', [Validators.nullValidator]],
+    });
     const attribute = document.body.getAttribute('data-layout');
 
     this.isVisible = attribute;
@@ -65,6 +87,7 @@ export class DefaultComponent implements OnInit {
     this.fetchStudents();
     this.fetchTeachers();
     this.getProfile();
+    this.fetchadmins();
   }
 
   ngAfterViewInit() {
@@ -107,6 +130,17 @@ export class DefaultComponent implements OnInit {
       console.error('Error fetching students', error.message);
     }
   }
+  async fetchadmins(): Promise<void> {
+    try {
+      this.defaultService.getAdmins().subscribe(admins=>{
+        this.admins=admins.filter((user)=>user.id!=this.profile.userId);
+        console.log(this.admins);
+      })
+    } catch (error) {
+      console.error('Error fetching students', error.message);
+    }
+  }
+  
   private fetchData() {
     this.emailSentBarChart = emailSentBarChart;
     this.monthlyEarningChart = monthlyEarningChart;
@@ -117,8 +151,36 @@ export class DefaultComponent implements OnInit {
       // this.statData = data.statData;
     });
   }
+  saveAdmin(){
+    console.log({...this.formGroup.value,roles:['admin']});
+    if(this.formGroup.valid){
+      this.defaultService.createAdmin({...this.formGroup.value,roles:['admin']}
+    ).subscribe(
+      newAdmin=>{
+        this.formGroup.reset();
+        this.modalRef?.hide();
+        this.toastr.success('new admin created with success!!.', 'Bootstrap');
+      },
+      error => {
+        console.error('Error updating Teacher', error);
+        this.toastr.error('Error updating Teacher', 'Bootstrap');
+      }
+    );
+    }else{
+      this.toastr.info('please fill the important inputs!!', 'Bootstrap');
+    }
+
+}
+closeModal(){
+  this.modalRef?.hide();
+  this.formGroup.reset();
+}
+
   opencenterModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template);
+  }
+  openAddModal(content:any){
+    this.modalRef = this.modalService.show(content, { class: 'modal-md' });
   }
   weeklyreport() {
     this.isActive = 'week';

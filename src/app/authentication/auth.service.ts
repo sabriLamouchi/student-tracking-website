@@ -11,7 +11,6 @@ export class AuthService {
   isLoggedIn: boolean = false;
 
   login(userDetails: { email: string; password: string }): Observable<any> {
-    console.log(userDetails);
     return this.http.post<any>('http://localhost:3000/auth/login', userDetails)
       // .pipe(map(response => {
       //     if (response.access_token) {

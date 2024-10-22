@@ -94,6 +94,50 @@
                     </apx-chart> -->
                 </div>
             </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-sm-flex admin-card flex-wrap">
+                        <h4 class="card-title mb-4">Administrators</h4>
+                            <div class="ms-auto">
+                                <ul class="nav nav-pills header">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="javascript: void(0);" [ngClass]="{'active': isActive === 'week'}">Name</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="javascript: void(0);" [ngClass]="{'active': isActive === 'month'}">Last name</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="javascript: void(0);"  [ngClass]="{'active': isActive === 'year'}">Email</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="javascript: void(0);"  [ngClass]="{'active': isActive === 'year'}">Status</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="ms-auto" *ngFor="let user of admins">
+                                <ul class="nav nav-pills ">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="javascript: void(0);" [ngClass]="{'active': isActive === 'week'}">{{user?.name}}</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="javascript: void(0);" [ngClass]="{'active': isActive === 'month'}">{{user?.last_name}}</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="javascript: void(0);"  [ngClass]="{'active': isActive === 'year'}">{{user?.email}}</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="javascript: void(0);"  [ngClass]="{'active': isActive === 'year'}" class="{{user?.status=='horligne'?'text-muted':'text-success'}}">{{user?.status}}</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                    </div>
+                </div>
+                <div class="card-buttons card-body pt-0 flex">
+                    <button (click)="openAddModal(content)" class="bg-success border-0">add new</button>
+                    <button class="bg-primary border-0" >go chat</button>
+                </div>
+            </div>
         </div>
     </div>
     <!-- end row -->
@@ -342,3 +386,75 @@
         </div>
     </div>
 </div>
+<ng-template #content role="document" let-modal>
+<div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLabel">Create Administrator</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal" (click)="modalRef?.hide()"></button>
+</div>
+<form (ngSubmit)="saveAdmin()" [formGroup]="formGroup">
+  <div class="modal-body">
+    <!-- <input type="hidden" name="id" value="" formControlName="name" /> -->
+    <div class="mb-3">
+      <label for="customername-field" class="form-label">Name</label>
+      <input type="text" id="customername-field" class="form-control" placeholder="Enter Name" required formControlName="name" [ngClass]="{ 'is-invalid': submitted && form['name'].errors }" />
+      <div *ngIf="submitted && form['title'].errors" class="invalid-feedback" align="left">
+        <div *ngIf="form['name'].errors['required']">Name is required</div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="customername-field" class="form-label">Last Name</label>
+      <input type="text" id="customername-field" class="form-control" placeholder="Enter last name" required formControlName="last_name" [ngClass]="{ 'is-invalid': submitted && form['last_name'].errors }" />
+      <div *ngIf="submitted && form['last_name'].errors" class="invalid-feedback" align="left">
+        <div *ngIf="form['last_name'].errors['required']">Company last_name is required</div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="email-field" class="form-label">Email</label>
+      <input type="text" id="email-field" disabled class="form-control" placeholder="Enter Email" required formControlName="email" [ngClass]="{ 'is-invalid': submitted && form['email'].errors }" />
+      <div *ngIf="submitted && form['email'].errors" class="invalid-feedback" align="left">
+        <div *ngIf="form['email'].errors['required']">email is required</div>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="email-field" class="form-label">Password</label>
+      <input type="text" id="password-field" disabled class="form-control" placeholder="Enter password" required formControlName="password" [ngClass]="{ 'is-invalid': submitted && form['password'].errors }" />
+      <div *ngIf="submitted && form['password'].errors" class="invalid-feedback" align="left">
+        <div *ngIf="form['password'].errors['required']">password is required</div>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="email-field" class="form-label">Phone Number</label>
+      <input type="number" id="phone-field" disabled class="form-control" placeholder="Enter Phone number" required formControlName="phone_number" [ngClass]="{ 'is-invalid': submitted && form['phone_number'].errors }" />
+      <div *ngIf="submitted && form['phone_number'].errors" class="invalid-feedback" align="left">
+        <div *ngIf="form['phone_number'].errors['required']">phone Number required</div>
+        <span *ngIf="form.phone_number.required">phone Number is required.</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="brth_date-field" class="form-label">birth Date</label>
+      <input type="text" id="brth_date-field" class="form-control" placeholder="Enter birth Date" required formControlName="birth_date" [ngClass]="{ 'is-invalid': submitted && form['birth_date'].errors }" />
+      <div *ngIf="submitted && form['birth_date'].errors" class="invalid-feedback" align="left">
+        <div *ngIf="form['birth_date'].errors['required']">birth_date is required</div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="age-field" class="form-label">Age</label>
+      <input type="number" id="age-field" class="form-control" placeholder="Enter Age" required formControlName="age" [ngClass]="{ 'is-invalid': submitted && form['age'].errors }" />
+      <div *ngIf="submitted && form['age'].errors" class="invalid-feedback" align="left">
+        <div *ngIf="form['age'].errors['required']">Age is required</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <div class="hstack gap-2 justify-content-end">
+      <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="closeModal()">Close</button>
+      <button type="submit" class="btn btn-success" id="add-btn">Create</button>
+    </div>
+  </div>
+</form>
+</ng-template>

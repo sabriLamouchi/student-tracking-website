@@ -103,9 +103,10 @@ export class ChatComponent implements OnInit, AfterViewInit {
     });
   }
   private _fetchRecentMessage(){
+    console.log("Recent Messages");
     this.chatService.getRecentMessage().subscribe(data => {
       console.log("Recent Message",data);
-      this.RecentChatData = data;
+      this.RecentChatData = data.filter((message)=>message.receiver.id!=this.userProfile.userId);
     });
   }
   private _fetchContacts(){
